@@ -5,7 +5,7 @@ from ops import *
 
 class Generator(nn.Module):
     
-    def __init__(self, img_feat = 3, n_feats = 64, kernel_size = 3, num_block = 16, act = nn.PReLU()):
+    def __init__(self, img_feat = 3, n_feats = 64, kernel_size = 3, num_block = 16, act = nn.PReLU(), scale=4):
         super(Generator, self).__init__()
         
         self.conv01 = conv(in_channel = img_feat, out_channel = n_feats, kernel_size = 9, BN = False, act = act)
@@ -15,7 +15,11 @@ class Generator(nn.Module):
         
         self.conv02 = conv(in_channel = n_feats, out_channel = n_feats, kernel_size = 3, BN = True, act = None)
         
-        upsample_blocks = [Upsampler(channel = n_feats, kernel_size = 3, scale = 2, act = act) for _ in range(2)]
+        if(scale == 4):
+            upsample_blocks = [Upsampler(channel = n_feats, kernel_size = 3, scale = 2, act = act) for _ in range(2)]
+        else:
+            upsample_blocks = [Upsampler(channel = n_feats, kernel_size = 3, scale = scale, act = act)]
+
         self.tail = nn.Sequential(*upsample_blocks)
         
         self.last_conv = conv(in_channel = n_feats, out_channel = img_feat, kernel_size = 3, BN = False, act = nn.Tanh())
