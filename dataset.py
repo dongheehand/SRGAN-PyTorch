@@ -54,7 +54,7 @@ class testOnly_data(Dataset):
         
         self.LR_path = LR_path
         self.LR_img = sorted(os.listdir(LR_path))
-        
+        self.in_memory = in_memory
         if in_memory:
             self.LR_img = [np.array(Image.open(os.path.join(self.LR_path, lr))) for lr in self.LR_img]
         
@@ -66,7 +66,7 @@ class testOnly_data(Dataset):
         
         img_item = {}
         
-        if in_memory:
+        if self.in_memory:
             LR = self.LR_img[i]
             
         else:
